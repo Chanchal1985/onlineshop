@@ -44,12 +44,14 @@ public class CustomerResourceService implements CustomerResource {
         if (customer == null) {
             new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        return new StreamingOutput() {
+
+        return output -> outputCustomer(output,customer);
+        /*return new StreamingOutput() {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
                 outputCustomer(output, customer);
             }
-        };
+        };*/
     }
 
     public void updateCustomer(int id, InputStream is) {
