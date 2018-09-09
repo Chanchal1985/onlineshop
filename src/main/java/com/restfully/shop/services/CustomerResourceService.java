@@ -6,8 +6,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.xml.parsers.DocumentBuilder;
@@ -26,28 +25,23 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  */
 
-public class CustomerResourceService implements CustomerResource{
+public class CustomerResourceService implements CustomerResource {
 
     private Map<Integer, Customer> customerDB = new ConcurrentHashMap<>();
     private AtomicInteger idCounter = new AtomicInteger();
 
 
-    @POST
-    @Consumes(MediaType.APPLICATION_XML)
-    public Response createCustomer(InputStream is){
+    public Response createCustomer(InputStream is) {
         Customer customer = readCustomer(is);
         customer.setId(idCounter.incrementAndGet());
-        customerDB.put(customer.getId(),customer);
-        System.out.println("Created Customer : "+customer.getId());
-        return Response.created(URI.create("/customers/"+customer.getId())).build();
+        customerDB.put(customer.getId(), customer);
+        System.out.println("Created Customer : " + customer.getId());
+        return Response.created(URI.create("/customers/" + customer.getId())).build();
     }
 
-    @GET
-    @Path("{id}")
-    @Produces(MediaType.APPLICATION_XML)
-    public StreamingOutput getCustomer(@PathParam("id") int id){
+    public StreamingOutput getCustomer(int id) {
         final Customer customer = customerDB.get(id);
-        if(customer == null){
+        if (customer == null) {
             new WebApplicationException(Response.Status.NOT_FOUND);
         }
         return new StreamingOutput() {
@@ -58,47 +52,48 @@ public class CustomerResourceService implements CustomerResource{
         };
     }
 
-    @PUT
-    @Path("{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void updateCustomer( @PathParam("id") int id, InputStream is){
+    public void updateCustomer(int id, InputStream is) {
         Customer customer = readCustomer(is);
-        if(customerDB.get(id) == null){
+        if (customerDB.get(id) == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         customerDB.put(id, customer);
 
     }
 
+    public Response getAllCustomers() {
+        return Response.ok("List of all dummy customers").build();
+    }
+
     private Customer readCustomer(InputStream is) {
         DocumentBuilder builder = null;
-        Customer cust = null ;
+        Customer cust = null;
 
         try {
             builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(is);
             Element root = doc.getDocumentElement();
             cust = new Customer();
-            if(root.getAttribute("id") != null  && !root.getAttribute("id").trim().equals("")){
+            if (root.getAttribute("id") != null && !root.getAttribute("id").trim().equals("")) {
                 cust.setId(Integer.valueOf(root.getAttribute("id")));
             }
 
             NodeList nodes = root.getChildNodes();
-            for (int i = 0 ;i< nodes.getLength();i++){
+            for (int i = 0; i < nodes.getLength(); i++) {
                 Element element = (Element) nodes.item(i);
-                if(element.getTagName().equals("first-name")){
+                if (element.getTagName().equals("first-name")) {
                     cust.setFirstName(element.getTextContent());
-                }else if (element.getTagName().equals("last-name")){
+                } else if (element.getTagName().equals("last-name")) {
                     cust.setLastName(element.getTextContent());
-                }else if (element.getTagName().equals("street")){
+                } else if (element.getTagName().equals("street")) {
                     cust.setStreet(element.getTextContent());
-                }else if (element.getTagName().equals("city")){
+                } else if (element.getTagName().equals("city")) {
                     cust.setCity(element.getTextContent());
-                }else if (element.getTagName().equals("state")){
+                } else if (element.getTagName().equals("state")) {
                     cust.setState(element.getTextContent());
-                }else if (element.getTagName().equals("zip")){
+                } else if (element.getTagName().equals("zip")) {
                     cust.setZip(element.getTextContent());
-                }else if (element.getTagName().equals("country")){
+                } else if (element.getTagName().equals("country")) {
                     cust.setCountry(element.getTextContent());
                 }
             }
@@ -113,7 +108,7 @@ public class CustomerResourceService implements CustomerResource{
         return cust;
     }
 
-    private void outputCustomer(OutputStream os, Customer cust){
+    private void outputCustomer(OutputStream os, Customer cust) {
         PrintStream writer = new PrintStream(os);
         writer.println("<customer id=\"" + cust.getId() + "\">");
         writer.println("<first-name>" + cust.getFirstName()

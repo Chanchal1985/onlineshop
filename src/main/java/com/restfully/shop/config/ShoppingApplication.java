@@ -1,5 +1,6 @@
 package com.restfully.shop.config;
 
+import com.restfully.shop.services.CustomerDbResourceService;
 import com.restfully.shop.services.CustomerResourceService;
 
 import javax.ws.rs.ApplicationPath;
@@ -14,7 +15,7 @@ public class ShoppingApplication extends Application {
     private Set<Class<?>> empty = new HashSet<>();
 
     public ShoppingApplication() {
-        singletons.add(new CustomerResourceService());
+        singletons.add(new CustomerDbResourceService());
     }
 
     @Override
