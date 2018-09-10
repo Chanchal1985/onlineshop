@@ -3,6 +3,7 @@ package com.restfully.shop.services;
 import com.restfully.shop.domain.Customer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -27,8 +28,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CustomerResourceService implements CustomerResource {
 
-    private Map<Integer, Customer> customerDB = new ConcurrentHashMap<>();
-    private AtomicInteger idCounter = new AtomicInteger();
+    private static Map<Integer, Customer> customerDB = new ConcurrentHashMap<>();
+    private static AtomicInteger idCounter = new AtomicInteger();
 
 
     public Response createCustomer(InputStream is) {
@@ -82,21 +83,24 @@ public class CustomerResourceService implements CustomerResource {
 
             NodeList nodes = root.getChildNodes();
             for (int i = 0; i < nodes.getLength(); i++) {
-                Element element = (Element) nodes.item(i);
-                if (element.getTagName().equals("first-name")) {
-                    cust.setFirstName(element.getTextContent());
-                } else if (element.getTagName().equals("last-name")) {
-                    cust.setLastName(element.getTextContent());
-                } else if (element.getTagName().equals("street")) {
-                    cust.setStreet(element.getTextContent());
-                } else if (element.getTagName().equals("city")) {
-                    cust.setCity(element.getTextContent());
-                } else if (element.getTagName().equals("state")) {
-                    cust.setState(element.getTextContent());
-                } else if (element.getTagName().equals("zip")) {
-                    cust.setZip(element.getTextContent());
-                } else if (element.getTagName().equals("country")) {
-                    cust.setCountry(element.getTextContent());
+                if(nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) nodes.item(i);
+
+                    if (element.getTagName().equals("first-name")) {
+                        cust.setFirstName(element.getTextContent());
+                    } else if (element.getTagName().equals("last-name")) {
+                        cust.setLastName(element.getTextContent());
+                    } else if (element.getTagName().equals("street")) {
+                        cust.setStreet(element.getTextContent());
+                    } else if (element.getTagName().equals("city")) {
+                        cust.setCity(element.getTextContent());
+                    } else if (element.getTagName().equals("state")) {
+                        cust.setState(element.getTextContent());
+                    } else if (element.getTagName().equals("zip")) {
+                        cust.setZip(element.getTextContent());
+                    } else if (element.getTagName().equals("country")) {
+                        cust.setCountry(element.getTextContent());
+                    }
                 }
             }
 
