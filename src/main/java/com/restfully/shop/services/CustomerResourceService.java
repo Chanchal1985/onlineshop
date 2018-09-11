@@ -1,6 +1,7 @@
 package com.restfully.shop.services;
 
 import com.restfully.shop.domain.Customer;
+import com.sun.jndi.toolkit.url.Uri;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -10,6 +11,7 @@ import org.xml.sax.SAXException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,12 +34,12 @@ public class CustomerResourceService implements CustomerResource {
     private static AtomicInteger idCounter = new AtomicInteger();
 
 
-    public Response createCustomer(InputStream is) {
+    public Response createCustomer(InputStream is, UriInfo uriInfo) {
         Customer customer = readCustomer(is);
         customer.setId(idCounter.incrementAndGet());
         customerDB.put(customer.getId(), customer);
         System.out.println("Created Customer : " + customer.getId());
-        return Response.created(URI.create("/customers/" + customer.getId())).build();
+        return Response.created(URI.create(uriInfo.getRequestUri().toString() + customer.getId())).build();
     }
 
     public StreamingOutput getCustomer(int id) {
@@ -45,7 +47,6 @@ public class CustomerResourceService implements CustomerResource {
         if (customer == null) {
             new WebApplicationException(Response.Status.NOT_FOUND);
         }
-
         return output -> outputCustomer(output,customer);
         /*return new StreamingOutput() {
             @Override

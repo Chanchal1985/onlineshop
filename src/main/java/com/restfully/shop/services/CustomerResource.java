@@ -1,9 +1,7 @@
 package com.restfully.shop.services;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.*;
 import java.io.InputStream;
 
 
@@ -11,7 +9,7 @@ public interface CustomerResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_XML)
-    Response createCustomer(InputStream is);
+    Response createCustomer(InputStream is, @Context UriInfo uriInfo);
 
     @GET
     @Path("{id}")

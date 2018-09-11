@@ -18,6 +18,7 @@ public class ShoppingApplication extends Application {
         singletons.add(new CustomerDbResourceService());
     }
 
+
     @Override
     public Set<Class<?>> getClasses() {
         return empty;

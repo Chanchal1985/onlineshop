@@ -1,8 +1,6 @@
 package com.restfully.shop.services;
 
-import org.apache.http.protocol.HTTP;
 import org.junit.Assert;
-import org.junit.Test;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -11,7 +9,16 @@ import javax.ws.rs.core.Response;
 
 //@RunWith(Arquillian.class)
 public class CustomerResourceServiceTest {
-  /*  @Deployment
+    private final String sampleCustomer = "<customer>"
+            + "<first-name>Bill</first-name>"
+            + "<last-name>Burke</last-name>"
+            + "<street>256 Clarendon Street</street>"
+            + "<city>Boston</city>"
+            + "<state>MA</state>"
+            + "<zip>02115</zip>"
+            + "<country>USA</country>"
+            + "</customer>";
+    /*  @Deployment
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
                 .addClass(CustomerResourceService.class)
@@ -41,8 +48,8 @@ public class CustomerResourceServiceTest {
                     + "</customer>";
 
             Response response = client.target("http://localhost:8080/onlineshop/services/customers/north-db/").request().post(Entity.xml(xml));
-
-            Assert.assertTrue(response.getStatus() == 200);
+            System.out.println("HTTP Status : "+response.getStatus());
+            Assert.assertTrue(response.getStatus() == 201);
             response.close();
 
         } finally {
@@ -52,7 +59,46 @@ public class CustomerResourceServiceTest {
     }
 
     @org.junit.Test
-    public void getCustomer() {
+    public void getCustomerPositive() {
+        Client client = ClientBuilder.newClient();
+        try {
+            String xml = "<customer>"
+                    + "<first-name>Bill</first-name>"
+                    + "<last-name>Burke</last-name>"
+                    + "<street>256 Clarendon Street</street>"
+                    + "<city>Boston</city>"
+                    + "<state>MA</state>"
+                    + "<zip>02115</zip>"
+                    + "<country>USA</country>"
+                    + "</customer>";
+
+            Response createResponse = client.target("http://localhost:8080/onlineshop/services/customers/north-db/").request().post(Entity.xml(xml));
+            String location;
+            location = (String) createResponse.getHeaders().get("location").get(0);
+            if (location == null || "".equals(location)) {
+                Assert.fail("location of customer could not be retrived");
+            }
+            Response getResponse = client.target(location).request().get();
+            Assert.assertTrue(getResponse.getStatus() == 200);
+            String body = getResponse.readEntity(String.class);
+            Assert.assertTrue(body.contains("<street>256 Clarendon Street</street>"));
+
+        } finally {
+            client.close();
+        }
+    }
+
+        @org.junit.Test
+        public void getCustomerNegative() {
+            Client client = ClientBuilder.newClient();
+            try {
+
+                Response createResponse = client.target("http://localhost:8080/onlineshop/services/customers/north-db/").request().post(Entity.xml(sampleCustomer));
+                Response getResponse = client.target("http://localhost:8080/onlineshop/services/customers/north-db/999999999").request().get();
+                Assert.assertEquals(500, getResponse.getStatus());
+            }finally {
+                client.close();
+            }
     }
 
     @org.junit.Test
