@@ -16,6 +16,7 @@ public class ShoppingApplication extends Application {
 
     public ShoppingApplication() {
         singletons.add(new CustomerDbResourceService());
+        singletons.add(new com.restfully.shop.services.jaxb.CustomerResourceService());
     }
 
 
