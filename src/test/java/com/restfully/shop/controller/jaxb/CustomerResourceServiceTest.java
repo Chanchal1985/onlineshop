@@ -1,4 +1,4 @@
-package com.restfully.shop.services.jaxb;
+package com.restfully.shop.controller.jaxb;
 
 import org.junit.Assert;
 
@@ -46,7 +46,7 @@ public class CustomerResourceServiceTest {
                     + "<country>USA</country>"
                     + "</customer>";
 
-            Response response = client.target("http://localhost:8080/onlineshop/services/jaxb/customers/").request().post(Entity.xml(xml));
+            Response response = client.target("http://localhost:8080/onlineshop/controller/jaxb/customers/").request().post(Entity.xml(xml));
             System.out.println("HTTP Status : "+response.getStatus());
             Assert.assertTrue(response.getStatus() == 201);
             response.close();
@@ -71,7 +71,7 @@ public class CustomerResourceServiceTest {
                     + "<country>USA</country>"
                     + "</customer>";
 
-            Response createResponse = client.target("http://localhost:8080/onlineshop/services/jaxb/customers/").request().post(Entity.xml(xml));
+            Response createResponse = client.target("http://localhost:8080/onlineshop/controller/jaxb/customers/").request().post(Entity.xml(xml));
             String location;
             location = (String) createResponse.getHeaders().get("location").get(0);
             if (location == null || "".equals(location)) {
@@ -91,8 +91,8 @@ public class CustomerResourceServiceTest {
         public void getCustomerNegative() {
             Client client = ClientBuilder.newClient();
             try {
-                Response createResponse = client.target("http://localhost:8080/onlineshop/services/jaxb/customers/").request().post(Entity.xml(sampleCustomer));
-                Response getResponse = client.target("http://localhost:8080/onlineshop/services/jaxb/customers/999999999").request().get();
+                Response createResponse = client.target("http://localhost:8080/onlineshop/controller/jaxb/customers/").request().post(Entity.xml(sampleCustomer));
+                Response getResponse = client.target("http://localhost:8080/onlineshop/controller/jaxb/customers/999999999").request().get();
                 Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), getResponse.getStatus());
             }finally {
                 client.close();

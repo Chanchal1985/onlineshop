@@ -1,4 +1,4 @@
-package com.restfully.shop.services;
+package com.restfully.shop.controller;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;

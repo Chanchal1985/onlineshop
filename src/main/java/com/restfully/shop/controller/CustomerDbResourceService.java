@@ -1,4 +1,4 @@
-package com.restfully.shop.services;
+package com.restfully.shop.controller;
 
 public class CustomerDbResourceService implements CustomerDbResource {
 

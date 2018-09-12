@@ -1,4 +1,4 @@
-package com.restfully.shop.services.jaxb;
+package com.restfully.shop.controller.jaxb;
 
 import com.restfully.shop.domain.jaxb.Customer;
 

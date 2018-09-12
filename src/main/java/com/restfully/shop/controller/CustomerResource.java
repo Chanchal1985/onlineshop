@@ -1,4 +1,4 @@
-package com.restfully.shop.services;
+package com.restfully.shop.controller;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;

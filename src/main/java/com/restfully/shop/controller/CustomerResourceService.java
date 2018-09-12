@@ -1,7 +1,6 @@
-package com.restfully.shop.services;
+package com.restfully.shop.controller;
 
 import com.restfully.shop.domain.Customer;
-import com.sun.jndi.toolkit.url.Uri;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
